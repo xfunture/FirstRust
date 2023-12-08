@@ -1,5 +1,15 @@
-use std::net::IpAddr;
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::ErrorKind;
+use std::io::{self,Read};
+use std::fmt::{Display, Debug};
+use std::fmt;
+mod add;            //声明add模块
+use add::test_add;  //引入add 模块函数
 
+
+mod displlay;
+use displlay::test_display;
 
 
 fn another_function(x:i32,y:char) {
@@ -335,21 +345,415 @@ fn test_enum(){
 
 
 
+use FirstRust::eat_at_restaurant;
+
 use crate::garden::vegetables::Asparagus;
 
-
 pub mod garden;
-
-
 
 fn test_crate(){
     println!("test_crate");
     let plant = Asparagus {};
+    let first_string: String = String::from("hello,world");
+    plant.functions(first_string);
 }
+
+fn test_vector(){
+    println!("test_vector:\n");
+    let mut v = Vec::new();
+    v.push(1);
+    v.push(2);
+    v.push(3);
+    v.push(4);
+    v.push(5);
+    v.push(6);
+    let first = &v[0];
+    println!("test_vector:{:?}",v);
+    let third = &v[2];
+    v.push(10);
+    let mut third:Option<&i32> = v.get(100);
+    match third{
+        Some(third) => {println!("The third elements is {}",third)},
+        other => println!("There is no third element"),
+    }
+
+    let mut x = vec![1, 2, 3, 4, 5];
+
+    let second = &x[0];
+
+    x.push(6);
+
+    let mut y = vec![1,2,3,4,5,6];
+    for i in &mut v{
+        *i *= 50;
+        println!("i:{}",i);
+    }
+
+    for i in v{
+        println!("i:{}",i);
+    }
+
+    #[derive(Debug)]
+    enum SpreadsheetCell{
+        Int(i32),
+        Float(f64),
+        Text(String),
+    }
+
+    let mut row = vec![
+        SpreadsheetCell::Int(3),
+        SpreadsheetCell::Text(String::from("hello,world")),
+        SpreadsheetCell::Float(10.12)
+    ];
+
+    row.remove(2);
+    println!("v:{:?}",row);
+
+    let s1 = String::from("hello,");
+    let s2: String = String::from("world");
+    let s3 = s1 + &s2;
+    println!("s3:{}\n",s3);
+
+    let s4 = String::from("tic");
+    let s5 = String::from("tac");
+    let s6 = String::from("toe");
+
+    let s7 = format!("{s4}-{s5}-{s6}");
+    println!("{s7}");
+
+}
+
+
+
+fn test_hashmap(){
+    let mut scores = HashMap::new();
+    scores.insert(String::from("Blue"),10);
+    scores.insert(String::from("Yellow"),50);
+
+    let team_name = String::from("Blue");
+    let score = scores.get(&team_name).copied().unwrap_or(0);
+    println!("score:{}",score);
+
+    scores.insert(String::from("Blue"),100);
+    scores.entry(String::from("Yellow")).or_insert(9000);
+
+    for (key,value) in &scores{
+        println!("{key} {value}");
+    }
+    let mut array = vec![1,2,3,4,5];
+
+}
+
+
+
+fn test_read_file(){
+    let greeting_file_result = File::open("temp.txt");
+    let greeting_file = match greeting_file_result{
+        Ok(file) => file,
+        Err(error) => panic!("Problem opening the File:{}",error),
+    };
+}
+
+
+fn test_read_file_v1(){
+    let greeting_file_result = File::open("temp.txt");
+    let greeting_file = match greeting_file_result{
+        Ok(file) => file,
+        Err(error) => match error.kind(){
+            ErrorKind::NotFound => match File::create("temp.txt"){
+                Ok(fc) => fc,
+                Err(e) => panic!("Problem creating the file: {:?}",e),
+            },
+            other_error => {
+                panic!("Problem opening the file:{:?}",other_error);
+            }
+        },
+    };
+    println!("greeting_file:{:?}",greeting_file);
+}
+
+fn test_read_file_v2(){
+    let greeting_file = File::open("hello.txt").unwrap_or_else(|error| {
+        if error.kind() == ErrorKind::NotFound {
+            File::create("hello.txt").unwrap_or_else(|error| {
+                panic!("Problem creating the file: {:?}", error);
+            })
+        } else {
+            panic!("Problem opening the file: {:?}", error);
+        }
+    });
+    println!("greeting_file:{:?}",greeting_file);
+
+}
+
+fn read_username_from_file() -> Result<String,io::Error>{
+    let username_file_result = File::open("hello.txt");
+    let mut username_file = match username_file_result {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+    let mut username = String::new();
+    match username_file.read_to_string(&mut username){
+        Ok(_) => Ok(username),
+        Err(e) => Err(e),
+    }
+}
+
+fn read_username_from_file_v1() -> Result<String,io::Error>{
+    let mut username = String::new();
+    File::open("hello.txt")?.read_to_string(&mut username);
+    Ok(username)
+}
+
+fn test_username_from_file(){
+    let result = read_username_from_file_v1();
+    if result.is_ok(){
+        println!("result:{:?}",result);
+    }else{
+        panic!("Result:{:?}",result);
+    }
+}
+
+
+fn largest(list:&[i32]) -> &i32{
+
+    let mut largest = &list[0];
+    for item in list{
+        if item > largest{
+            largest = item;
+        }
+    }
+    largest
+}
+
+
+struct Point<T,U>{
+    x:T,
+    y:U,
+}
+
+impl<T,U> Point<T,U>{
+    fn getx(&self) -> &T{
+        &self.x
+    }
+}
+
+impl Point<f32,f32>{
+    fn distance_from_origin(&self) ->f32{
+        (self.x.powi(2) * self.y.powi(2)).sqrt()
+    }
+}
+
+fn largest_char(list:&[char]) -> &char{
+    let mut largest = &list[0];
+    for item in list{
+        if item > largest{
+            largest = item;
+        }
+    }
+    largest
+}
+
+
+// fn largest_generics<T>(list:&[T]) -> &T{
+//     let mut largest = &list[0];
+//     for item in list{
+//         if item > largest{
+//             largest = item;
+//         }
+//     }
+//     largest
+// }
+
+fn find_largest(){
+    let number_list = vec![34,50,25,100,65];
+    let result = largest(&number_list);
+    println!("The largest number is {}",result);
+    let number_list = vec![102,34,6000,89,54,2,43,8];
+    let result = largest(&number_list);
+    println!("The largest number is {}",result);
+
+    let char_list = vec!['y','m','a','q'];
+    let result = largest_char(&char_list);
+    println!("The largest char is {}",result);
+
+}
+
+fn test_struct_geneic(){
+    let both_integer = Point{x:5,y:10};
+    let both_float = Point{x:3.0,y:5.0};
+    let integer_and_flooat = Point{x:4,y:32.0};
+}
+
+
+pub trait Summary{
+    fn summarize(&self) -> String{
+        String::from("Read more ...... ")
+    }
+}
+
+pub struct Post{
+    pub title:String,   //标题
+    pub author:String,  //作者
+    pub content:String, //内容
+}
+
+impl Summary for Post{}
+
+
+#[derive(Debug)]
+pub struct Weibo{
+    pub username:String,
+    pub content:String,
+    pub age:i32,
+}
+
+
+//重载了特征Summary的方法summarize
+impl Summary for Weibo{
+    fn summarize(&self) -> String {
+        format!("{}发表了微博{}",self.username,self.content)
+    }
+}
+
+
+//为Weibo 实现了Display 特征
+impl fmt::Display for Weibo{
+    fn fmt(&self,f:&mut fmt::Formatter<'_>) -> Result<(),std::fmt::Error>{
+            write!(f,"display fmt: I'm {},I {} years old,{}",self.username,self.age,self.content)
+    }
+}
+
+//参数类型：实现了summary 特征的类型（trait summary）,特征函数类型
+//任何实现了summary 特征的的类型都可以作为该函数的参数
+fn summary_function(item: &impl Summary){
+    println!("Breaking news!{}",item.summarize());
+}
+
+
+pub fn notify<T:Summary>(item1:&T , item2:&T){
+    println!("notify Breaking news1:{}",item1.summarize());
+    println!("notify Breaking news2:{}",item2.summarize());
+}
+
+pub fn notify_v1(item: &(impl Summary + Display))
+{
+    println!("notify_v1 Breaking news:{}",item);
+}
+
+pub fn notify_v2<T:Summary + Display>(item:&T)
+{
+    println!("notify_v2 Breaking news:{}",item);
+}
+
+// fn some_function<T:Display + Clone,U:Clone + Debug>(t:&T,u:&U) -> i32{
+// }
+
+//通过where简化trait bound
+// fn some_function<T:,U>(t:&T,u:&U) -> i32
+// where T:Display + Clone,
+//       U:Clone + Debug
+// {
+
+// }
+
+
+//返回实现了trait 的类型
+fn returns_summarizable(switch:bool) -> impl Summary{
+    if switch{
+            Post{
+                title:String::from("Penguins win the Stanley Cup Championship!"),
+                author:String::from("Iceburgh"),
+                content:String::from("The Pittsburgh Penguins once again are the best hockey team in the NHL.")
+            }
+        }else{
+            Post{
+                title:String::from("Penguins win the Stanley Cup Championship!"),
+                author:String::from("Iceburgh"),
+                content:String::from("The Pittsburgh Penguins once again are the best hockey team in the NHL.")
+            }
+
+        //     Weibo{
+        //         username:String::from("Xiejinhao"),
+        //         content:String::from("hello"),age:31
+        //     }
+        }
+}
+
+
+
+fn test_trait(){
+    let post = Post{title:String::from("Post title"),author:String::from("rick"),content:String::from("hello,world")};
+    let summarize = post.summarize();
+    println!("Post summarize:{}",summarize);
+
+    let weibo = Weibo{username:"rickbruce".to_string(),content:"hello,world".to_string(),age:18};
+    let summarize:String = weibo.summarize();
+    println!("Post summarize:{}",summarize);
+
+    summary_function(&post);
+    summary_function(&weibo);
+    notify(&post,&post);      //item1 和item2 必须是相同的类型，同时T:Summary 说明了必须实现Summary 特征
+    notify_v1(&weibo);
+    notify_v2(&weibo);
+    let post = returns_summarizable(true);
+    let summarize:String = post.summarize();
+    println!("Post summarize:{}",summarize);
+
+
+}
+
+
+
+mod sheep;
+use sheep::test_sheep;
+
+mod traitobject;
+use traitobject::test_traitobject;
+
+mod traitarray;
+use traitarray::test_traitvec;
+
+mod dynbox;
+use dynbox::test_dyn_box;
+
+mod traitstudent;
+use traitstudent::test_trait_student;
+
+mod screentrait;
+use screentrait::test_screen_trait;
+
+mod printaddress;
+use printaddress::print_address;
+
+mod static_dynamic_dispatch;
+use static_dynamic_dispatch::test_static_and_dynamic_dispatch;
+
+mod safeobject;
+use safeobject::test_safe_object;
 
 fn main() {
 //    test_struct();
 //    test_enum();
-    test_crate();
-
+    // test_crate();
+    // test_vector();
+    // test_hashmap();
+    // test_read_file();
+    // test_read_file_v1();
+    // test_read_file_v2();
+    // test_username_from_file();
+    // find_largest();
+    // test_struct_geneic();
+    test_trait();                           // 测试特征类型，特征约束
+    test_add();                             // 测试自定义类型实现 add 操作
+    test_display();                         // 自定义类型打印输出
+    test_sheep();                           // 测试特征类型
+    test_traitobject();                     // 测试函数返回同特征的不同对象
+    test_traitvec();                        // 测试数组存储不同的特征对象
+    test_dyn_box();
+    test_trait_student();               
+    test_screen_trait();                    // 测试Box 和 dyn
+    print_address();                        // 打印变量地址,字符串字面值存储在堆上
+    test_static_and_dynamic_dispatch();     // 测试静态分发和动态分发
+    test_safe_object();
 }
