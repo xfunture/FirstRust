@@ -732,6 +732,27 @@ use static_dynamic_dispatch::test_static_and_dynamic_dispatch;
 mod safeobject;
 use safeobject::test_safe_object;
 
+mod supertrait;
+use supertrait::test_supertrait;
+// use supertrait::test_reference;
+
+fn longest<'a>(x:&'a i32,y:&'a i32) -> &'a i32{
+    if x>=y{
+        x
+    }else{
+        y
+    }
+}
+
+
+
+fn test_lifetime(){
+    let x = 3;
+    let y = 4;
+    let z= longest(&x, &y);
+    println!("largest value:{}",z);
+}
+
 fn main() {
 //    test_struct();
 //    test_enum();
@@ -756,4 +777,7 @@ fn main() {
     print_address();                        // 打印变量地址,字符串字面值存储在堆上
     test_static_and_dynamic_dispatch();     // 测试静态分发和动态分发
     test_safe_object();
+    test_supertrait();                      //测试超级trait
+    // test_reference();
+    test_lifetime();
 }
