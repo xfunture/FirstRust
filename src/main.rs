@@ -736,6 +736,16 @@ mod supertrait;
 use supertrait::test_supertrait;
 // use supertrait::test_reference;
 
+mod closure;
+use closure::test_closure;
+
+mod parallel;
+use parallel::test_thread;
+use parallel::test_thread_v1;
+
+mod iterator;
+use iterator::test_iterator;
+
 fn longest<'a>(x:&'a i32,y:&'a i32) -> &'a i32{
     if x>=y{
         x
@@ -780,4 +790,8 @@ fn main() {
     test_supertrait();                      //测试超级trait
     // test_reference();
     test_lifetime();
+    test_closure();                         //测试闭包
+    // test_thread();
+    // test_thread_v1();
+    test_iterator();
 }
