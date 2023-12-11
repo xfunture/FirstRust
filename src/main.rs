@@ -746,6 +746,12 @@ use parallel::test_thread_v1;
 mod iterator;
 use iterator::test_iterator;
 
+mod question_mark_operator;
+use question_mark_operator::test_question_mark_operator;
+
+mod testunwrap;
+use testunwrap::test_unwrap;
+
 fn longest<'a>(x:&'a i32,y:&'a i32) -> &'a i32{
     if x>=y{
         x
@@ -790,8 +796,10 @@ fn main() {
     test_supertrait();                      //测试超级trait
     // test_reference();
     test_lifetime();
-    test_closure();                         //测试闭包
+    test_closure();                                         //测试闭包
     // test_thread();
     // test_thread_v1();
-    test_iterator();
+    test_iterator();                                            //测试迭代器
+    test_question_mark_operator();      //测试问号运算符
+    test_unwrap();                                          //测试简化错误处理unwrap
 }
