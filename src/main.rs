@@ -769,37 +769,63 @@ fn test_lifetime(){
     println!("largest value:{}",z);
 }
 
-fn main() {
-//    test_struct();
-//    test_enum();
-    // test_crate();
-    // test_vector();
-    // test_hashmap();
-    // test_read_file();
-    // test_read_file_v1();
-    // test_read_file_v2();
-    // test_username_from_file();
-    // find_largest();
-    // test_struct_geneic();
-    test_trait();                           // 测试特征类型，特征约束
-    test_add();                             // 测试自定义类型实现 add 操作
-    test_display();                         // 自定义类型打印输出
-    test_sheep();                           // 测试特征类型
-    test_traitobject();                     // 测试函数返回同特征的不同对象
-    test_traitvec();                        // 测试数组存储不同的特征对象
-    test_dyn_box();
-    test_trait_student();               
-    test_screen_trait();                    // 测试Box 和 dyn
-    print_address();                        // 打印变量地址,字符串字面值存储在堆上
-    test_static_and_dynamic_dispatch();     // 测试静态分发和动态分发
-    test_safe_object();
-    test_supertrait();                      //测试超级trait
-    // test_reference();
-    test_lifetime();
-    test_closure();                                         //测试闭包
-    // test_thread();
-    // test_thread_v1();
-    test_iterator();                                            //测试迭代器
-    test_question_mark_operator();      //测试问号运算符
-    test_unwrap();                                          //测试简化错误处理unwrap
+// fn main() {
+// //    test_struct();
+// //    test_enum();
+//     // test_crate();
+//     // test_vector();
+//     // test_hashmap();
+//     // test_read_file();
+//     // test_read_file_v1();
+//     // test_read_file_v2();
+//     // test_username_from_file();
+//     // find_largest();
+//     // test_struct_geneic();
+//     test_trait();                           // 测试特征类型，特征约束
+//     test_add();                             // 测试自定义类型实现 add 操作
+//     test_display();                         // 自定义类型打印输出
+//     test_sheep();                           // 测试特征类型
+//     test_traitobject();                     // 测试函数返回同特征的不同对象
+//     test_traitvec();                        // 测试数组存储不同的特征对象
+//     test_dyn_box();
+//     test_trait_student();               
+//     test_screen_trait();                    // 测试Box 和 dyn
+//     print_address();                        // 打印变量地址,字符串字面值存储在堆上
+//     test_static_and_dynamic_dispatch();     // 测试静态分发和动态分发
+//     test_safe_object();
+//     test_supertrait();                      //测试超级trait
+//     // test_reference();
+//     test_lifetime();
+//     test_closure();                                         //测试闭包
+//     // test_thread();
+//     // test_thread_v1();
+//     test_iterator();                                            //测试迭代器
+//     test_question_mark_operator();      //测试问号运算符
+//     // test_unwrap();                                          //测试简化错误处理unwrap
+
+
+
+
+// }
+
+
+
+
+mod concurrent;
+use concurrent::testconcurrent::test_select;
+use concurrent::testconcurrent::blocks;
+
+
+#[tokio::main]
+async fn main(){
+    test_select(100,200,500).await;
+
+    test_select(200,100,500).await;
+
+    test_select(200,100,50).await;
+
+    blocks().await;
+
+
+    
 }
