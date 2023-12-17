@@ -34,12 +34,12 @@ pub async fn test_select(t1:u64,t2:u64,timeout:u64){
 async fn borrow_x(x: &u8) -> u8 { *x }
 
 //async 的生命周期
-fn good() -> impl Future<Output = u8> {
-    async {
-        let x = 5;
-        borrow_x(&x).await
-    }
-}
+// fn good() -> impl Future<Output = u8> {
+//     async {
+//         let x = 5;
+//         borrow_x(&x).await
+//     }
+// }
 
 pub async fn blocks(){
     let my_string = "foot".to_string();

@@ -815,6 +815,8 @@ mod concurrent;
 use concurrent::testconcurrent::test_select;
 use concurrent::testconcurrent::blocks;
 
+mod smartpoint;
+use smartpoint::test_smart_point;
 
 #[tokio::main]
 async fn main(){
@@ -825,6 +827,8 @@ async fn main(){
     test_select(200,100,50).await;
 
     blocks().await;
+
+    test_smart_point();
 
 
     
